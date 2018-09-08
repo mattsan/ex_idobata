@@ -1,6 +1,6 @@
 # ExIdobata
 
-**TODO: Add description**
+An [Idobata.io](https://idobata.io/home) client in Elixir.
 
 ## Installation
 

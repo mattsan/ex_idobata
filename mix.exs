@@ -19,7 +19,8 @@ defmodule ExIdobata.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.3.0"}
+      {:httpoison, "~> 1.3.0"},
+      {:ex_doc, "~> 0.19.1", only: :dev, autoload: false}
     ]
   end
 end
