@@ -52,6 +52,6 @@ defmodule ExIdobata do
   end
 
   defp muptipart_image(filename) do
-    {:multipart, [{:file, filename, {"form-data", [{"name", "image"}, {"filename", Path.basename(filename)}]}, []}]}
+    {:multipart, [{:file, Path.expand(filename), {"form-data", [{"name", "image"}, {"filename", Path.basename(filename)}]}, []}]}
   end
 end
