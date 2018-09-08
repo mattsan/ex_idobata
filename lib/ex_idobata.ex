@@ -27,7 +27,9 @@ defmodule ExIdobata do
     headers = ["Content-Type": "application/x-www-form-urlencoded"]
 
     encoded_message = URI.encode_www_form(message)
-    body = if get_in(options, [:html]) do
+
+    body =
+      if get_in(options, [:html]) do
         "source=#{encoded_message}&format=html"
       else
         "source=#{encoded_message}"
