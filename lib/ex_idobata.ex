@@ -9,10 +9,10 @@ defmodule ExIdobata do
 
   alias ExIdobata.Endpoint
 
-  @type t :: %Endpoint{}
+  @type endpoint :: %ExIdobata.Endpoint{}
   @type httpoison_result :: {:ok, HTTPoison.Response.t() | HTTPoison.AsyncResponse.t()} | {:error, HTTPoison.Error.t()}
 
-  @spec new_hook(String.t()) :: Endpoint.t()
+  @spec new_hook(String.t()) :: endpoint
   @doc """
   Get hook data of Idobata.io.
   """
@@ -27,7 +27,7 @@ defmodule ExIdobata do
 
   - `:html` - set `true`, `message` is post as HTML.
   """
-  @spec post_message(Endpoint.t(), String.t(), Keyword.t()) :: httpoison_result
+  @spec post_message(endpoint, String.t(), Keyword.t()) :: httpoison_result
   def post_message(%Endpoint{url: url}, message, options \\ []) do
     headers = ["Content-Type": "application/x-www-form-urlencoded"]
 
@@ -46,7 +46,7 @@ defmodule ExIdobata do
   @doc """
   Post an image to Idobata.io from image file.
   """
-  @spec post_image_file(Endpoint.t(), String.t()) :: httpoison_result
+  @spec post_image_file(endpoint, String.t()) :: httpoison_result
   def post_image_file(%Endpoint{url: url}, filename) do
     HTTPoison.post(url, muptipart_image(filename))
   end
