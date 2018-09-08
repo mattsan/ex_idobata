@@ -31,14 +31,10 @@ defmodule ExIdobata do
   def post_message(%Endpoint{url: url}, message, options \\ []) do
     headers = ["Content-Type": "application/x-www-form-urlencoded"]
 
-    encoded_message = URI.encode_www_form(message)
-
     body =
-      if get_in(options, [:html]) do
-        "source=#{encoded_message}&format=html"
-      else
-        "source=#{encoded_message}"
-      end
+      [source: message, format: format(options)]
+      |> Enum.reject(&is_nil(elem(&1, 1)))
+      |> URI.encode_query()
 
     HTTPoison.post(url, body, headers)
   end
@@ -53,5 +49,12 @@ defmodule ExIdobata do
 
   defp muptipart_image(filename) do
     {:multipart, [{:file, Path.expand(filename), {"form-data", [{"name", "image"}, {"filename", Path.basename(filename)}]}, []}]}
+  end
+
+  defp format(options) do
+    case get_in(options, [:html]) do
+      true -> "html"
+      _ -> nil
+    end
   end
 end
