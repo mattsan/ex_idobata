@@ -41,14 +41,53 @@ defmodule ExIdobata do
 
   @doc """
   Post an image to Idobata.io from image file.
+
+  ## option
+
+  - `:text` - post an image with a plain text
+  - `:html` - post an image with an HTML
   """
-  @spec post_image_file(endpoint, String.t()) :: httpoison_result
-  def post_image_file(%Endpoint{url: url}, filename) do
-    HTTPoison.post(url, muptipart_image(filename))
+  @spec post_image_file(endpoint, String.t(), Keyword.t()) :: httpoison_result
+  def post_image_file(%Endpoint{url: url}, filename, options \\ []) do
+    HTTPoison.post(url, muptipart_image(filename, options))
   end
 
-  defp muptipart_image(filename) do
-    {:multipart, [{:file, Path.expand(filename), {"form-data", [{"name", "image"}, {"filename", Path.basename(filename)}]}, []}]}
+  defp muptipart_image(filename, options) do
+    {:multipart, []}
+    |> append_file(filename)
+    |> append_text(options)
+    |> append_html(options)
+  end
+
+  defp append_file({:multipart, forms}, filename) do
+    file_form = {
+      :file,
+      Path.expand(filename),
+      {
+        "form-data",
+        [
+          {"name", "image"},
+          {"filename", Path.basename(filename)}
+        ]
+      },
+      []
+    }
+
+    {:multipart, [file_form | forms]}
+  end
+
+  defp append_text({:multipart, forms} = multipart, options) do
+    case get_in(options, [:text]) do
+      nil -> multipart
+      text -> {:multipart, [{"source", text} | forms]}
+    end
+  end
+
+  defp append_html({:multipart, forms} = multipart, options) do
+    case get_in(options, [:html]) do
+      nil -> multipart
+      html -> {:multipart, [{"source", html}, {"format", "html"} | forms]}
+    end
   end
 
   defp format(options) do
