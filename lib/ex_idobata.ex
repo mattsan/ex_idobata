@@ -4,7 +4,9 @@ defmodule ExIdobata do
   """
 
   defmodule Endpoint do
-    defstruct [:url]
+    defstruct [
+      url: Application.get_env(:ex_idobata, :endpoint_url)
+    ]
   end
 
   alias ExIdobata.Endpoint
