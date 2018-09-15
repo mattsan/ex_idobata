@@ -3,18 +3,11 @@ defmodule ExIdobata do
   An [Idobata.io](https://idobata.io/home) client in Elixir.
   """
 
-  defmodule Endpoint do
-    defstruct [
-      url: Application.get_env(:ex_idobata, :endpoint_url)
-    ]
-  end
-
   alias ExIdobata.Endpoint
 
-  @type endpoint :: %ExIdobata.Endpoint{}
-  @type httpoison_result :: {:ok, HTTPoison.Response.t() | HTTPoison.AsyncResponse.t()} | {:error, HTTPoison.Error.t()}
+  @endpoint_url Application.get_env(:ex_idobata, :endpoint_url) || ""
 
-  @spec new_hook(String.t()) :: endpoint
+  @spec new_hook(String.t()) :: Endpoint.t()
   @doc """
   Get hook data of Idobata.io.
   """
@@ -34,11 +27,17 @@ defmodule ExIdobata do
       - `:markdown` - Markdown
   - `:file` - An image file to post.
   """
-  @spec post(endpoint, Keyword.t()) :: httpoison_result
-  def post(%Endpoint{url: url} \\ %Endpoint{}, fields) do
+  @spec post(Endpoint.t(), Keyword.t()) :: {:ok, integer, String.t()} | {:error, any}
+  def post(%Endpoint{} = endpoint \\ %Endpoint{url: @endpoint_url}, fields) do
     forms = fields |> Enum.reduce([], &build_form/2)
 
-    HTTPoison.post(url, {:multipart, forms})
+    case HTTPoison.post(endpoint.url, {:multipart, forms}) do
+      {:ok, %HTTPoison.Response{body: body, status_code: status_code}} ->
+        {:ok, status_code, body}
+
+      {:error, error} ->
+        {:error, Exception.message(error)}
+    end
   end
 
   defp build_form({:image, filename}, forms), do: [file_form(filename) | forms]
