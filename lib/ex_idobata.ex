@@ -31,7 +31,7 @@ defmodule ExIdobata do
   def post(%Endpoint{} = endpoint \\ %Endpoint{url: @endpoint_url}, fields) do
     forms = fields |> Enum.reduce([], &build_form/2)
 
-    case HTTPoison.post(endpoint.url, {:multipart, forms}) do
+    case HTTPoison.post(endpoint.url, {:multipart, forms}, [], [ssl: [{:versions, [:'tlsv1.2']}]]) do
       {:ok, %HTTPoison.Response{body: body, status_code: status_code}} ->
         {:ok, status_code, body}
 
