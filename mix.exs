@@ -8,7 +8,11 @@ defmodule ExIdobata.MixProject do
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      docs: docs()
+      docs: docs(),
+      package: package(),
+      description: """
+      An Idobata.io client in Elixir.
+      """
     ]
   end
 
@@ -30,6 +34,13 @@ defmodule ExIdobata.MixProject do
     [
       extras: ["README.md"],
       main: "readme"
+    ]
+  end
+
+  defp package do
+    [
+      licenses: ["MIT"],
+      links: %{github: "https://github.com/mattsan/ex_idobata"}
     ]
   end
 end

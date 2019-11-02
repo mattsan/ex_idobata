@@ -10,7 +10,7 @@ by adding `ex_idobata` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_idobata, github: "mattsan/ex_idobata.git"}
+    {:ex_idobata, "~> 0.1"}
   ]
 end
 ```
