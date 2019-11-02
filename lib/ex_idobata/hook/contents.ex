@@ -7,8 +7,8 @@ defmodule ExIdobata.Hook.Contents do
 
   @type source :: {binary(), binary()}
   @type format :: {binary(), binary()}
-  @type file :: {:file, binary(), tuple(), list()}
-  @type part :: source() | format() | file()
+  @type image :: {:file, binary(), tuple(), list()}
+  @type part :: source() | format() | image()
   @type t :: %__MODULE__{
     parts: [part()]
   }
@@ -24,10 +24,10 @@ defmodule ExIdobata.Hook.Contents do
   def contents(params) when is_list(params) do
     parts =
       params
-      |> Enum.map(fn
-        {:source, src} -> source(src)
-        {:format, fmt} -> format(fmt)
-        {:file, filename} -> file(filename)
+      |> Enum.reduce([], fn
+        {:source, src}, acc -> [source(src) | acc]
+        {:format, fmt}, acc -> [format(fmt) | acc]
+        {:image, filename}, acc -> [image(filename) | acc]
       end)
 
     %Contents{parts: parts}
@@ -47,10 +47,10 @@ defmodule ExIdobata.Hook.Contents do
     }
   end
 
-  @spec file(t(), binary()) :: t()
-  def file(%Contents{parts: parts} = contents, filename) when is_binary(filename) do
+  @spec image(t(), binary()) :: t()
+  def image(%Contents{parts: parts} = contents, filename) when is_binary(filename) do
     %Contents{contents |
-      parts: [file(filename) | parts]
+      parts: [image(filename) | parts]
     }
   end
 
@@ -61,15 +61,15 @@ defmodule ExIdobata.Hook.Contents do
   def format(fmt) when is_binary(fmt), do: {"format", fmt}
   def format(fmt) when is_atom(fmt), do: {"format", Atom.to_string(fmt)}
 
-  @spec file(binary()) :: file()
-  def file(filename) when is_binary(filename) do
+  @spec image(binary()) :: image()
+  def image(filename) when is_binary(filename) do
     {
       :file,
       Path.expand(filename),
       {
         "form-data",
         [
-          {"name", "file"},
+          {"name", "image"},
           {"filename", Path.basename(filename)}
         ]
       },

@@ -9,13 +9,13 @@ defmodule ExIdobata.Hook do
 
   Hook.contents()
   |> Hook.source("# Hello!")
-  |> Hook.format(:markdown)
-  |> Hook.file("./hello.gif")
+  |> Hook.markdown()
+  |> Hook.image("./hello.gif")
   |> Hook.post(room_uuid)
 
   # or
 
-  Hook.contents(source: "# Hello!, format: :markdown, file: "./hello.gif")
+  Hook.contents(source: "# Hello!, format: :markdown, image: "./hello.gif")
   |> Hook.post(room_uuid)
   ```
   """
@@ -54,14 +54,24 @@ defmodule ExIdobata.Hook do
   defdelegate source(contents, source), to: Contents
 
   @doc """
-  Set format of the source in the contents.
+  Set format of the source Markdown in the contents.
   """
-  @spec format(Contents.t(), binary()) :: Contents.t()
-  defdelegate format(contents, format), to: Contents
+  @spec markdown(Contents.t()) :: Contents.t()
+  def markdown(contents) do
+    Contents.format(contents, "markdown")
+  end
 
   @doc """
-  Append a file into the contents.
+  Set format of the source HTML in the contents.
   """
-  @spec file(Contents.t(), binary()) :: Contents.t()
-  defdelegate file(contents, filename), to: Contents
+  @spec html(Contents.t()) :: Contents.t()
+  def html(contents) do
+    Contents.format(contents, "html")
+  end
+
+  @doc """
+  Set an image into the contents.
+  """
+  @spec image(Contents.t(), binary()) :: Contents.t()
+  defdelegate image(contents, filename), to: Contents
 end
