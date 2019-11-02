@@ -3,15 +3,15 @@ defmodule ExIdobata.Hook.Contents do
   Container for contents of to post idobata.io
   """
 
-  defstruct [parts: []]
+  defstruct parts: []
 
   @type source :: {binary(), binary()}
   @type format :: {binary(), binary()}
   @type image :: {:file, binary(), tuple(), list()}
   @type part :: source() | format() | image()
   @type t :: %__MODULE__{
-    parts: [part()]
-  }
+          parts: [part()]
+        }
 
   alias ExIdobata.Hook.Contents
 
@@ -35,23 +35,17 @@ defmodule ExIdobata.Hook.Contents do
 
   @spec source(t(), binary()) :: t()
   def source(%Contents{parts: parts} = contents, src) when is_binary(src) do
-    %Contents{contents |
-      parts: [source(src) | parts]
-    }
+    %Contents{contents | parts: [source(src) | parts]}
   end
 
   @spec format(t(), binary() | atom()) :: t()
   def format(%Contents{parts: parts} = contents, fmt) when is_binary(fmt) or is_atom(fmt) do
-    %Contents{contents |
-      parts: [format(fmt) | parts]
-    }
+    %Contents{contents | parts: [format(fmt) | parts]}
   end
 
   @spec image(t(), binary()) :: t()
   def image(%Contents{parts: parts} = contents, filename) when is_binary(filename) do
-    %Contents{contents |
-      parts: [image(filename) | parts]
-    }
+    %Contents{contents | parts: [image(filename) | parts]}
   end
 
   @spec source(binary()) :: source()
