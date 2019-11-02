@@ -23,10 +23,23 @@ defmodule ExIdobata.Hook do
   alias ExIdobata.Hook.{Endpoint, Contents}
 
   @doc """
-  Post contents to idobata.io with hook API.
+  Post contents to idobata.io with default hook API.
+
+  This uses default UUID. see `post/2`.
   """
-  @spec post(Contents.t(), binary()) :: any()
-  def post(%Contents{} = contents, room_uuid) when is_binary(room_uuid) do
+  @spec post(Contents.t()) :: any()
+  def post(%Contents{} = contents) do
+    post(contents, :default)
+  end
+
+  @doc """
+  Post contents to idobata.io with hook API.
+
+  - `contents` - Contents to post to idobata.io
+  - `room_uuid` - UUID of a room of idobata.io to be post. see `ExIdobata.Hook.Endpoint.path/1`
+  """
+  @spec post(Contents.t(), Endpoint.room_uuid()) :: any()
+  def post(%Contents{} = contents, room_uuid) do
     HTTPoison.post(
       Endpoint.path(room_uuid),
       {:multipart, contents.parts},
@@ -43,6 +56,26 @@ defmodule ExIdobata.Hook do
 
   @doc """
   Initialize contents to post with patrs
+
+
+  - `:source` - source text
+  - `:format` - format of the source text (`:markdown` or `:html`)
+  - `:image` - filename of image file
+
+  ## Example
+
+  ```elixir
+  ExIdobata.Hook.contents(source: "**Hi!**", format: :markdown, image: "./hello.gif")
+  ```
+
+  This is same as:
+
+  ```elixir
+  ExIdobata.Hook.contents()
+  |> ExIdobata.Hook.source("**Hi!**")
+  |> ExIdobata.Hook.markdown()
+  |> ExIdobata.Hook.image("./hello.gif")
+  ```
   """
   @spec contents(Keyword.t()) :: Contents.t()
   defdelegate contents(params), to: Contents

@@ -1,6 +1,6 @@
 defmodule ExIdobata.Hook.Contents do
   @moduledoc """
-  A container for contents of to post idobata.io
+  Container for contents of to post idobata.io
   """
 
   defstruct [parts: []]
