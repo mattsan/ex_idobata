@@ -1,6 +1,6 @@
 # ExIdobata
 
-An [Idobata.io](https://idobata.io/home) client in Elixir.
+An [Idobata.io](https://idobata.io/en/home) ([Japanese](https://idobata.io/ja/home)) client in Elixir.
 
 ## Installation
 
@@ -15,57 +15,55 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ex_idobata](https://hexdocs.pm/ex_idobata).
+## Hook
 
-## configration
+To post messages or images to use hook API.
 
-Set a default url.
+### Usage
 
 ```elixir
-config :ex_idobata, 
-  endpoint_url: "https://idobata.io/hook/custom/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+alias ExIdobata.Hook
 ```
-
-## Usage
 
 ```elixir
-endpoint = ExIdobata.new_hook("https://idobata.io/hook/custom/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx")
-```
+# room UUID, it's the last part of hook API,
+# for examle https://idobata.io/hook/custom/00000000-0000-0000-0000-000000000000
 
-or
+room_uuid = "00000000-0000-0000-0000-000000000000"
+```
 
 ```elixir
-endpoint = ExIdobata.new_hook() # use a default url set in config.exs
+# post plain text message
+
+Hook.contents()
+|> Hook.source("Hi")
+|> Hook.post(room_uuid)
+
+# post Markdown message
+
+Hook.contents()
+|> Hook.source("# Hi")
+|> Hook.markdown()
+|> Hook.post(room_uuid)
+
+# post HTML message
+
+Hook.contents()
+|> Hook.source("<h1>Hi</h1>")
+|> Hook.html()
+|> Hook.post(room_uuid)
+
+# post message with image
+
+Hook.contents()
+|> Hook.source("hi")
+|> Hook.image("./hello.gif")
+|> Hook.post(room_uuid)
 ```
 
-### Post a message.
+#### Use environment variable
 
-```elixir
-endpoint |> ExIdoata.post(source: "Hello!")
-```
+If `room_uuid` omitted, the function `post` uses a value of environemnt variable `IDOBATA_HOOK_ROOM_UUID` as UUID.
+To use another environment variable, pass a tuple with `:system` and the variable name (e.g., `{:system, "ANOTHER_ROOM_UUID"}`).
 
-### Post a message as HTML.
 
-```elixir
-endpoint |> ExIdoata.post(source: "<h1>Hello!</h1>", format: :html)
-```
-
-### Post a message as Markdown.
-
-```elixir
-endpoint |> ExIdoata.post(source: "# Hello!", format: :markdown)
-```
-
-### Post an image file.
-
-```elixir
-endpoint |> ExIdoata.post(image: "/path/to/image.png")
-```
-
-Text (Markdown) and Image:
-
-```elixir
-endpoint |> ExIdoata.post(source: "This is a **PNG** image.", format: :markdown, image: "/path/to/image.png")
-```
