@@ -22,6 +22,8 @@ defmodule ExIdobata.Hook do
 
   alias ExIdobata.Hook.{Endpoint, Contents}
 
+  @http_client Application.get_env(:ex_idobata, :http_client, HTTPoison)
+
   @doc """
   Post contents to idobata.io with default hook API.
 
@@ -36,12 +38,12 @@ defmodule ExIdobata.Hook do
   Post contents to idobata.io with hook API.
 
   - `contents` - Contents to post to idobata.io
-  - `room_uuid` - UUID of a room of idobata.io to be post. see `ExIdobata.Hook.Endpoint.path/1`
+  - `room_uuid` - UUID of a room of idobata.io to be post. see `ExIdobata.Hook.Endpoint.url/1`
   """
   @spec post(Contents.t(), Endpoint.room_uuid()) :: any()
   def post(%Contents{} = contents, room_uuid) do
-    HTTPoison.post(
-      Endpoint.path(room_uuid),
+    @http_client.post(
+      Endpoint.url(room_uuid),
       {:multipart, contents.parts},
       [],
       ssl: [{:versions, [:"tlsv1.2"]}]
