@@ -2,10 +2,15 @@ defmodule ExIdobata.HookTest do
   use ExUnit.Case
   doctest ExIdobata.Hook
 
-  import ExUnit.CaptureIO
+  import ExUnit.CaptureLog
 
   alias ExIdobata.Hook
   alias ExIdobata.Hook.Contents
+
+  setup_all do
+    {:ok, _} = start_supervised(ExIdobata.Mock.HTTPClient)
+    :ok
+  end
 
   describe "content" do
     test "empty" do
@@ -59,9 +64,9 @@ defmodule ExIdobata.HookTest do
       options: '[ssl: [versions: [:"tlsv1.2"]]]'
       """
 
-      assert capture_io(fn ->
+      assert capture_log(fn ->
                Hook.contents(source: "Hi") |> Hook.post("room-uuid")
-             end) == expected
+             end) =~ expected
     end
 
     test "post an image" do
@@ -72,11 +77,11 @@ defmodule ExIdobata.HookTest do
       options: '[ssl: [versions: [:"tlsv1.2"]]]'
       """
 
-      assert capture_io(fn ->
+      assert capture_log(fn ->
                Hook.contents()
                |> Hook.image("./foo.jpg")
                |> Hook.post("room-uuid")
-             end) == expected
+             end) =~ expected
     end
   end
 end
