@@ -14,8 +14,6 @@ defmodule ExIdobata.API do
   """
   @moduledoc since: "0.2.0"
 
-  @url "https://api.idobata.io/graphql"
-
   alias ExIdobata.API.Query
   import ExIdobata.API.Query, only: [is_format: 1]
 
@@ -30,7 +28,7 @@ defmodule ExIdobata.API do
   ```
   """
   def viewer(access_token) when is_binary(access_token) do
-    case query(access_token, Query.viewer()) do
+    case Query.request(access_token, Query.viewer()) do
       %{"data" => data} ->
         %{
           name: data["viewer"]["name"]
@@ -56,7 +54,7 @@ defmodule ExIdobata.API do
   ```
   """
   def rooms(access_token) when is_binary(access_token) do
-    case query(access_token, Query.rooms()) do
+    case Query.request(access_token, Query.rooms()) do
       %{"data" => data} ->
         data["viewer"]["rooms"]["edges"]
         |> Enum.map(fn %{"node" => node} ->
@@ -92,7 +90,7 @@ defmodule ExIdobata.API do
         :html -> "HTML"
       end
 
-    case query(access_token, Query.post(room_id, format_string), %{source: message}) do
+    case Query.request(access_token, Query.post(room_id, format_string), %{source: message}) do
       %{"data" => data} ->
         data
 
@@ -101,18 +99,5 @@ defmodule ExIdobata.API do
     end
   rescue
     error -> {:error, error}
-  end
-
-  defp query(access_token, query_string, vars \\ %{}) do
-    {:ok, json} = Jason.encode(%{query: query_string, variables: vars})
-
-    headers = %{
-      "Content-Type" => "application/json",
-      "Authorization" => "Bearer #{access_token}"
-    }
-
-    with {:ok, %{status_code: 200} = resp} <- HTTPoison.post(@url, json, headers),
-         {:ok, result} <- Jason.decode(resp.body),
-         do: result
   end
 end
