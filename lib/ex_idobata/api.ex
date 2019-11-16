@@ -90,7 +90,7 @@ defmodule ExIdobata.API do
         :html -> "HTML"
       end
 
-    case Query.request(access_token, Query.post(room_id, format_string), %{source: message}) do
+    case Query.request(access_token, Query.post(), %{source: message, room_id: room_id, format: format_string}) do
       %{"data" => data} ->
         data
 

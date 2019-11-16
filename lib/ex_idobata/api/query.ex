@@ -14,11 +14,11 @@ defmodule ExIdobata.API.Query do
   @viewer_query "query { viewer { name } }"
   @rooms_query "query { viewer { rooms { edges { node { id name organization { slug } } } } } }"
   @post_query """
-  mutation ($source: String!) {
+  mutation($source: String!, $room_id: ID!, $format: MessageFormat!) {
     createMessage(input: {
-      roomId: "<%= room_id %>",
+      roomId: $room_id,
       source: $source,
-      format: <%= format %>
+      format: $format
     }) {
       clientMutationId
     }
@@ -45,8 +45,8 @@ defmodule ExIdobata.API.Query do
   EEx.function_from_string(:def, :rooms, @rooms_query)
 
   @doc false
-  @spec post(binary(), binary()) :: binary()
-  EEx.function_from_string(:def, :post, @post_query, [:room_id, :format])
+  @spec post :: binary()
+  EEx.function_from_string(:def, :post, @post_query)
 
   @doc false
   @spec request(binary(), binary(), map()) :: any()
