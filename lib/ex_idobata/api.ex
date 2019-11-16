@@ -85,7 +85,7 @@ defmodule ExIdobata.API do
       when is_binary(access_token) and is_binary(room_id) and is_format(format) do
     format_string =
       case format do
-        :plain -> "PLANE"
+        :plain -> "PLAIN"
         :markdown -> "MARKDOWN"
         :html -> "HTML"
       end
