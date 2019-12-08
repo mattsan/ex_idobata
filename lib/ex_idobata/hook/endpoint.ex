@@ -2,6 +2,7 @@ defmodule ExIdobata.Hook.Endpoint do
   @moduledoc """
   Endpoint structure of ExIdobata.
   """
+  @moduledoc since: "0.1.0"
 
   @port 443
   @scheme "https"
@@ -11,7 +12,6 @@ defmodule ExIdobata.Hook.Endpoint do
 
   @type room_uuid :: binary() | {:system, binary()} | :default
 
-  @spec url(room_uuid()) :: binary()
   @doc """
   Get a URL of idobata.io hook API.
 
@@ -20,6 +20,8 @@ defmodule ExIdobata.Hook.Endpoint do
     - tuple of `:system` and binary (e.g., `{:system, "ROOM_UUID"}` - use value of the environment variable as UUID
     - `:default` - use value of default environemnt variable `IDOBATA_HOOK_ROOM_UUID` as UUID
   """
+  @doc since: "0.1.0"
+  @spec url(room_uuid()) :: binary()
   def url(room_uuid)
 
   def url(:default) do

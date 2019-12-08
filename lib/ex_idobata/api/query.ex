@@ -32,6 +32,7 @@ defmodule ExIdobata.API.Query do
 
   Allowed in guard clauses.
   """
+  @doc since: "0.2.0"
   defguard is_format(format) when format in [:plain, :markdown, :html]
 
   require EEx
