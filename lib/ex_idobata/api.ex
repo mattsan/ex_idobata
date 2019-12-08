@@ -41,7 +41,7 @@ defmodule ExIdobata.API do
 
   @spec rooms(binary()) :: [map()]
   @doc """
-  Gets list of romms.
+  Gets list of rooms.
 
   It returns like bellow.
 
