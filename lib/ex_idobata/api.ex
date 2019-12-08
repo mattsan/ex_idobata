@@ -2,7 +2,7 @@ defmodule ExIdobata.API do
   @moduledoc """
   GraphQL API module.
 
-  See [idobata public API](https://idobata.io/ja/api).
+  See [idobata public API](https://idobata.io/api).
 
   To get an access token, request bellow.
 
