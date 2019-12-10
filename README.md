@@ -66,4 +66,51 @@ Hook.contents()
 If `room_uuid` omitted, the function `post` uses a value of environemnt variable `IDOBATA_HOOK_ROOM_UUID` as UUID.
 To use another environment variable, pass a tuple with `:system` and the variable name (e.g., `{:system, "ANOTHER_ROOM_UUID"}`).
 
+## GraphQL API
 
+### Gets an access token
+
+```elixir
+access_token = ExIdobata.API.AccessToken.get(email, password)
+```
+
+This access token used API functions described below.
+
+### Gets a viewer
+
+```elixir
+viewer = ExIdobata.API.Viewer.get(access_token)
+# `viewer.name` is an account user name
+```
+
+### Gets rooms
+
+```elixir
+rooms = ExIdobata.API.Room.get(access_token)
+```
+
+### Posts a message
+
+To post a plain text message.
+
+```elixir
+ExIdobata.API.post(access_token, room, "Hi")
+```
+
+It's same as bellow.
+
+```elixir
+ExIdobata.API.post(access_token, room, "Hi", :plain)
+```
+
+To post a Markdown message.
+
+```elixir
+ExIdobata.API.post(access_token, room, "*Hi*", :markdown)
+```
+
+To post a HTML message.
+
+```elixir
+ExIdobata.API.post(access_token, room, "<h1>Hi</h1>", :html)
+```
