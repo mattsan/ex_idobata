@@ -8,11 +8,12 @@ defmodule ExIdobata.API.Viewer do
 
   defstruct [:name]
 
-  alias ExIdobata.API.Query
+  alias ExIdobata.API.{AccessToken, Query}
 
   @type t :: %__MODULE__{
           name: String.t()
         }
+  @type access_token :: String.t() | AccessToken.t()
 
   @doc """
   Gets the viewer name.
@@ -22,10 +23,18 @@ defmodule ExIdobata.API.Viewer do
   ```elixir
   %ExIdobata.API.Viewer{name: "a_user"}
   ```
+
+  - `access_token` - An access token got by `ExIdobata.API.AccessToken.get/2` or its token string
   """
   @doc since: "0.2.0"
-  @spec get(binary()) :: map()
-  def get(access_token) when is_binary(access_token) do
+  @spec get(access_token()) :: map()
+  def get(access_token) do
+    access_token =
+      case access_token do
+        %AccessToken{access_token: access_token} -> access_token
+        access_token when is_binary(access_token) -> access_token
+      end
+
     case Query.request(access_token, Query.viewer()) do
       %{"data" => data} ->
         %__MODULE__{

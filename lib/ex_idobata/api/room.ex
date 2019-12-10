@@ -8,13 +8,14 @@ defmodule ExIdobata.API.Room do
 
   defstruct [:id, :name, :organization]
 
-  alias ExIdobata.API.Query
+  alias ExIdobata.API.{AccessToken, Query}
 
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
           organization: String.t()
         }
+  @type access_token :: String.t() | AccessToken.t()
 
   @doc """
   Gets list of rooms.
@@ -28,10 +29,18 @@ defmodule ExIdobata.API.Room do
     %ExIdobata.API.Room{id: "ccccccc", name: "room3", organization: "bar"}
   ]
   ```
+
+  - `access_token` - An access token got by `ExIdobata.API.AccessToken.get/2` or its token string
   """
   @doc since: "0.2.0"
-  @spec get(binary()) :: [map()]
-  def get(access_token) when is_binary(access_token) do
+  @spec get(access_token()) :: [map()]
+  def get(access_token) do
+    access_token =
+      case access_token do
+        %AccessToken{access_token: access_token} -> access_token
+        access_token when is_binary(access_token) -> access_token
+      end
+
     case Query.request(access_token, Query.rooms()) do
       %{"data" => data} ->
         data["viewer"]["rooms"]["edges"]

@@ -14,20 +14,35 @@ defmodule ExIdobata.API do
   """
   @moduledoc since: "0.2.0"
 
-  alias ExIdobata.API.Query
+  alias ExIdobata.API.{AccessToken, Query, Room}
   import ExIdobata.API.Query, only: [is_format: 1]
+
+  @type access_token :: String.t() | AccessToken.t()
+  @type room :: String.t() | Room.t()
 
   @doc """
   Post a message to the room.
 
-  - `room_id` - One of room id got by function `rooms/1`
+  - `access_token` - An access token got by `ExIdobata.API.AccessToken.get/2` or its token string
+  - `room` - One of room got by function `ExIdobata.API.Room.get/1` or its room id
   - `message` - A message to be post to the room
   - `format` - A format of the message. `:plain` (default), `:markdown` or `:html`
   """
   @doc since: "0.2.0"
-  @spec post(binary(), binary(), binary(), Query.format()) :: any()
-  def post(access_token, room_id, message, format \\ :plain)
-      when is_binary(access_token) and is_binary(room_id) and is_format(format) do
+  @spec post(access_token(), room(), binary(), Query.format()) :: any()
+  def post(access_token, room, message, format \\ :plain) when is_format(format) do
+    access_token =
+      case access_token do
+        %AccessToken{access_token: access_token} -> access_token
+        access_token when is_binary(access_token) -> access_token
+      end
+
+    room_id =
+      case room do
+        %Room{id: id} -> id
+        room_id when is_binary(room_id) -> room_id
+      end
+
     format_string =
       case format do
         :plain -> "PLAIN"
@@ -35,7 +50,11 @@ defmodule ExIdobata.API do
         :html -> "HTML"
       end
 
-    case Query.request(access_token, Query.post(), %{source: message, room_id: room_id, format: format_string}) do
+    case Query.request(access_token, Query.post(), %{
+           source: message,
+           room_id: room_id,
+           format: format_string
+         }) do
       %{"data" => data} ->
         data
 
