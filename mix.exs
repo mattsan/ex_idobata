@@ -7,6 +7,7 @@ defmodule ExIdobata.MixProject do
       version: "0.1.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(),
       deps: deps(),
       docs: docs(),
       package: package(),
@@ -20,6 +21,13 @@ defmodule ExIdobata.MixProject do
     [
       extra_applications: [:logger]
     ]
+  end
+
+  def elixirc_paths do
+    case Mix.env() do
+      :test -> ["lib", "test/mock"]
+      _ -> ["lib"]
+    end
   end
 
   defp deps do
