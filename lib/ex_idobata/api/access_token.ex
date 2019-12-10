@@ -1,6 +1,6 @@
 defmodule ExIdobata.API.AccessToken do
   @moduledoc """
-  Access Token module.
+  A module of access token.
 
   See [idobata public API](https://idobata.io/api).
   """
@@ -27,7 +27,7 @@ defmodule ExIdobata.API.AccessToken do
   """
   @doc since: "0.2.0"
   @spec get(String.t(), String.t()) :: t()
-  def get(email, password) do
+  def get(email, password) when is_binary(email) and is_binary(password) do
     with {:ok, resp} <- HTTPoison.post(@url, body(email, password), @headers),
          {:ok, data} <- Jason.decode(resp.body),
          do: new(data)

@@ -31,7 +31,7 @@ defmodule ExIdobata.APITest do
 
     actual =
       capture_log(fn ->
-        assert API.viewer("access-token") == %{name: "foobar"}
+        assert API.Viewer.get("access-token") == %ExIdobata.API.Viewer{name: "foobar"}
       end)
 
     assert actual =~ expected
@@ -66,9 +66,9 @@ defmodule ExIdobata.APITest do
 
     actual =
       capture_log(fn ->
-        assert API.rooms("access-token") == [
-                 %{id: "abc123", name: "foo", organization: "hoge"},
-                 %{id: "def456", name: "bar", organization: "fuga"}
+        assert API.Room.get("access-token") == [
+                 %ExIdobata.API.Room{id: "abc123", name: "foo", organization: "hoge"},
+                 %ExIdobata.API.Room{id: "def456", name: "bar", organization: "fuga"}
                ]
       end)
 

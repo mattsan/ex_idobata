@@ -51,7 +51,8 @@ defmodule ExIdobata.API.Query do
 
   @doc false
   @spec request(binary(), binary(), map()) :: any()
-  def request(access_token, query_string, vars \\ %{}) do
+  def request(access_token, query_string, vars \\ %{})
+      when is_binary(access_token) and is_binary(query_string) and is_map(vars) do
     {:ok, json} = Jason.encode(%{query: query_string, variables: vars})
 
     headers = %{
