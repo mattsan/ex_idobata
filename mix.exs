@@ -4,7 +4,7 @@ defmodule ExIdobata.MixProject do
   def project do
     [
       app: :ex_idobata,
-      version: "0.1.1",
+      version: "0.2.0",
       elixir: "~> 1.7",
       start_permanent: Mix.env() == :prod,
       elixirc_paths: elixirc_paths(),
@@ -33,6 +33,7 @@ defmodule ExIdobata.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.6"},
+      {:jason, "~> 1.1"},
       {:ex_doc, "~> 0.21", only: :dev, autoload: false},
       {:dialyxir, "~> 0.5", only: :dev, autoload: false}
     ]

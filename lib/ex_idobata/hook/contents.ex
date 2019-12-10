@@ -2,6 +2,7 @@ defmodule ExIdobata.Hook.Contents do
   @moduledoc """
   Container for contents of to post idobata.io
   """
+  @moduledoc since: "0.1.0"
 
   defstruct parts: []
 
@@ -15,11 +16,13 @@ defmodule ExIdobata.Hook.Contents do
 
   alias ExIdobata.Hook.Contents
 
+  @doc since: "0.1.0"
   @spec contents :: t()
   def contents do
     %Contents{}
   end
 
+  @doc since: "0.1.0"
   @spec contents([part()]) :: t()
   def contents(params) when is_list(params) do
     parts =
@@ -33,28 +36,34 @@ defmodule ExIdobata.Hook.Contents do
     %Contents{parts: parts}
   end
 
+  @doc since: "0.1.0"
   @spec source(t(), binary()) :: t()
   def source(%Contents{parts: parts} = contents, src) when is_binary(src) do
     %Contents{contents | parts: [source(src) | parts]}
   end
 
+  @doc since: "0.1.0"
   @spec format(t(), binary() | atom()) :: t()
   def format(%Contents{parts: parts} = contents, fmt) when is_binary(fmt) or is_atom(fmt) do
     %Contents{contents | parts: [format(fmt) | parts]}
   end
 
+  @doc since: "0.1.0"
   @spec image(t(), binary()) :: t()
   def image(%Contents{parts: parts} = contents, filename) when is_binary(filename) do
     %Contents{contents | parts: [image(filename) | parts]}
   end
 
+  @doc since: "0.1.0"
   @spec source(binary()) :: source()
   def source(src) when is_binary(src), do: {"source", src}
 
+  @doc since: "0.1.0"
   @spec format(binary() | atom) :: format()
   def format(fmt) when is_binary(fmt), do: {"format", fmt}
   def format(fmt) when is_atom(fmt), do: {"format", Atom.to_string(fmt)}
 
+  @doc since: "0.1.0"
   @spec image(binary()) :: image()
   def image(filename) when is_binary(filename) do
     {
