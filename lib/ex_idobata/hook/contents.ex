@@ -9,6 +9,7 @@ defmodule ExIdobata.Hook.Contents do
   @type source :: {binary(), binary()}
   @type format :: {binary(), binary()}
   @type image :: {:file, binary(), tuple(), list()}
+  @type blob :: {binary(), binary(), tuple(), list()}
   @type part :: source() | format() | image()
   @type t :: %__MODULE__{
           parts: [part()]
@@ -54,6 +55,14 @@ defmodule ExIdobata.Hook.Contents do
     %Contents{contents | parts: [image(filename) | parts]}
   end
 
+  @doc since: "0.3.0"
+  @spec image(t(), binary(), binary()) :: t()
+  def image(%Contents{parts: parts} = contents, filename, body)
+      when is_binary(filename) and is_binary(body) do
+    content_type = :mimerl.filename(filename)
+    %Contents{contents | parts: [blob(filename, body, "image", content_type) | parts]}
+  end
+
   @doc since: "0.1.0"
   @spec source(binary()) :: source()
   def source(src) when is_binary(src), do: {"source", src}
@@ -77,6 +86,24 @@ defmodule ExIdobata.Hook.Contents do
         ]
       },
       []
+    }
+  end
+
+  @doc since: "0.3.0"
+  @spec blob(binary(), binary(), binary(), binary()) :: blob()
+  def blob(filename, binary, name, content_type)
+      when is_binary(binary) and is_binary(binary) and is_binary(name) and is_binary(content_type) do
+    {
+      "blob",
+      binary,
+      {
+        "form-data",
+        [
+          {"name", name},
+          {"filename", filename}
+        ]
+      },
+      [{"Content-Type", content_type}]
     }
   end
 end

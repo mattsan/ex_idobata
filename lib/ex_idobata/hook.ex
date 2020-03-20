@@ -113,9 +113,16 @@ defmodule ExIdobata.Hook do
   end
 
   @doc """
-  Set an image into the contents.
+  Set an image into the contents from a file.
   """
   @doc since: "0.1.0"
   @spec image(Contents.t(), binary()) :: Contents.t()
   defdelegate image(contents, filename), to: Contents
+
+  @doc """
+  Set an image into the contents from a binary string.
+  """
+  @doc since: "0.3.0"
+  @spec image(Contents.t(), binary(), binary()) :: Contents.t()
+  defdelegate image(contents, filename, body), to: Contents
 end
