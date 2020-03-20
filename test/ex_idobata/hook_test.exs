@@ -36,7 +36,7 @@ defmodule ExIdobata.HookTest do
       assert contents |> Hook.html() == %Contents{parts: [{"format", "html"}]}
     end
 
-    test "iamge", %{contents: contents} do
+    test "image/2", %{contents: contents} do
       assert contents |> Hook.image("./bar.jpg") ==
                %Contents{
                  parts: [
@@ -49,6 +49,24 @@ defmodule ExIdobata.HookTest do
                         {"filename", "bar.jpg"}
                       ]},
                      []
+                   }
+                 ]
+               }
+    end
+
+    test "image/3", %{contents: contents} do
+      assert contents |> Hook.image("bar.jpg", <<1, 2, 3>>) ==
+               %Contents{
+                 parts: [
+                   {
+                     "blob",
+                     <<1, 2, 3>>,
+                     {"form-data",
+                      [
+                        {"name", "image"},
+                        {"filename", "bar.jpg"}
+                      ]},
+                     [{"Content-Type", "image/jpeg"}]
                    }
                  ]
                }
