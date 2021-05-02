@@ -11,12 +11,19 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        elixir_version:
+          - 1.11.4
+          - 1.10.4
+          - 1.9.4
+
     steps:
     - uses: actions/checkout@v2
     - name: Setup elixir
       uses: actions/setup-elixir@v1
       with:
-        elixir-version: 1.9.4 # Define the elixir version [required]
+        elixir-version: ${{ matrix.elixir_version }}
         otp-version: 22.2 # Define the OTP version [required]
         experimental-otp: true
     - name: Install Dependencies
