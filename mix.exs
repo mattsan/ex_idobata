@@ -32,7 +32,7 @@ defmodule ExIdobata.MixProject do
 
   defp deps do
     [
-      {:httpoison, "~> 1.6"},
+      {:httpoison, "~> 2.0"},
       {:jason, "~> 1.1"},
       {:ex_doc, "~> 0.21", only: :dev, autoload: false},
       {:dialyxir, "~> 1.0", only: :dev, autoload: false}
